@@ -9,9 +9,12 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("connected");
+  console.log("connected", socket);
 
-  socket.broadcast.emit("connection", "User has joined");
+  socket.broadcast.emit(
+    "connection",
+    `${socket.conn.server.clientsCount} users in the chat room.`
+  );
 
   socket.on("chat message", (msg) => {
     io.emit("chat message", msg);
