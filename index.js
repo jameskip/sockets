@@ -9,12 +9,10 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("connected", socket);
+  let userCount = socket.conn.server.clientsCount;
 
-  socket.broadcast.emit(
-    "connection",
-    `${socket.conn.server.clientsCount} users in the chat room.`
-  );
+  socket.emit("connection", `${userCount} users in the chat room.`);
+  socket.broadcast.emit("connection", `${userCount} users in the chat room.`);
 
   socket.on("chat message", (msg) => {
     io.emit("chat message", msg);
