@@ -11,11 +11,24 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
   let userCount = socket.conn.server.clientsCount;
 
-  socket.emit("connection", `${userCount} users in the chat room.`);
-  socket.broadcast.emit("connection", `${userCount} users in the chat room.`);
+  socket.emit("connection", `Welcome! ${userCount} users in the chat room.`);
+
+  socket.broadcast.emit(
+    "connection",
+    `Someone has joined. ${userCount} users in the chat room.`
+  );
 
   socket.on("chat message", (msg) => {
     io.emit("chat message", msg);
+  });
+
+  socket.on("disconnect", () => {
+    let userCount = socket.conn.server.clientsCount;
+
+    io.emit(
+      "disconnect",
+      `Someone has left. ${userCount} users in the chat room.`
+    );
   });
 });
 
